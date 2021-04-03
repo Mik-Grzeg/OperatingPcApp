@@ -94,7 +94,7 @@ class FirstFragment : Fragment() {
     }
 
     private fun powerOn(onBtn: Button?, offBtn: Button?, rebootBtn: Button?, stateTextView: TextView?) {
-        onBtn?.setBackgroundColor(Color.GRAY)
+        onBtn?.setBackgroundColor(Color.DKGRAY)
         context?.let { ContextCompat.getColor(it, R.color.purple_500) }?.let { offBtn?.setBackgroundColor(it) }
         context?.let { ContextCompat.getColor(it, R.color.purple_500) }?.let { rebootBtn?.setBackgroundColor(it) }
 
@@ -107,8 +107,8 @@ class FirstFragment : Fragment() {
 
     private fun powerOff(onBtn: Button?, offBtn: Button?, rebootBtn: Button?, stateTextView: TextView?) {
         context?.let { ContextCompat.getColor(it, R.color.purple_500) }?.let { onBtn?.setBackgroundColor(it) }
-        offBtn?.setBackgroundColor(Color.GRAY)
-        rebootBtn?.setBackgroundColor(Color.GRAY)
+        offBtn?.setBackgroundColor(Color.DKGRAY)
+        rebootBtn?.setBackgroundColor(Color.DKGRAY)
 
         stateTextView?.text = getString(R.string.disabled)
 
