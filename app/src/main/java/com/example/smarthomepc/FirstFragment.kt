@@ -1,9 +1,14 @@
 package com.example.smarthomepc
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
+import android.app.ProgressDialog
+import android.app.ProgressDialog.show
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,21 +18,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.jcraft.jsch.Channel
-import com.jcraft.jsch.ChannelExec
-import com.jcraft.jsch.JSch
-import com.jcraft.jsch.Session
+import com.jcraft.jsch.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import org.slf4j.helpers.Util
 import java.lang.Exception
-import java.lang.StringBuilder
 import java.net.*
-import java.security.KeyStore
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -37,7 +36,21 @@ import kotlin.properties.Delegates
 class FirstFragment : Fragment() {
 
     private lateinit var sharedPref: SharedPreferences
-    //private lateinit var pass: KeyStore.PasswordProtection
+    private var enabled by Delegates.observable(false) {
+        property, oldValue, newValue ->
+
+        val onBtn = activity?.findViewById<Button>(R.id.on_btn)
+        val offBtn = activity?.findViewById<Button>(R.id.off_btn)
+        val rebootBtn = activity?.findViewById<Button>(R.id.reboot_btn)
+        val stateTextView = activity?.findViewById<TextView>(R.id.state)
+
+        when (newValue) {
+            true -> powerOn(onBtn, offBtn, rebootBtn, stateTextView)
+            false -> powerOff(onBtn, offBtn, rebootBtn, stateTextView)
+        }
+    }
+
+    private lateinit var spinner: ProgressBar
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -50,55 +63,83 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val refreshBtn = view.findViewById<FloatingActionButton>(R.id.refreshButton)
+        spinner = view.findViewById(R.id.spinner)
+        spinner.visibility = View.GONE
 
-        view.findViewById<FloatingActionButton>(R.id.refreshButton).setOnClickListener {
-            GlobalScope.async { getPcState(view) }
-        }
-
-        val toggleBtn = view.findViewById<ToggleButton>(R.id.toggleButton)
-        toggleBtn.setOnClickListener {
-            if (toggleBtn.isChecked) {
-                showPasswordDialog()
-            } else {
-                wakeOnLan()
+        refreshBtn.setOnClickListener {
+            spinner.visibility = View.VISIBLE
+            GlobalScope.async {
+                enabled = pingPc()
             }
         }
 
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
+        view.findViewById<Button>(R.id.on_btn).setOnClickListener{
+            wakeOnLan()
+        }
 
-//        getPcState(view)
+        view.findViewById<Button>(R.id.off_btn).setOnClickListener{
+            showPasswordDialog(getString(R.string.shutdown_command))
+        }
+
+        view.findViewById<Button>(R.id.reboot_btn).setOnClickListener{
+            showPasswordDialog(getString(R.string.reboot_command))
+        }
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
         view.findViewById<TextView>(R.id.MacAddress).text = sharedPref.getString("edit_text_mac_address", "")
 
+        refreshBtn.performClick()
+
     }
+
+    private fun powerOn(onBtn: Button?, offBtn: Button?, rebootBtn: Button?, stateTextView: TextView?) {
+        onBtn?.setBackgroundColor(Color.GRAY)
+        context?.let { ContextCompat.getColor(it, R.color.purple_500) }?.let { offBtn?.setBackgroundColor(it) }
+        context?.let { ContextCompat.getColor(it, R.color.purple_500) }?.let { rebootBtn?.setBackgroundColor(it) }
+
+        stateTextView?.text = getString(R.string.enabled)
+
+        onBtn?.isClickable = false
+        offBtn?.isClickable= true
+        rebootBtn?.isClickable = true
+    }
+
+    private fun powerOff(onBtn: Button?, offBtn: Button?, rebootBtn: Button?, stateTextView: TextView?) {
+        context?.let { ContextCompat.getColor(it, R.color.purple_500) }?.let { onBtn?.setBackgroundColor(it) }
+        offBtn?.setBackgroundColor(Color.GRAY)
+        rebootBtn?.setBackgroundColor(Color.GRAY)
+
+        stateTextView?.text = getString(R.string.disabled)
+
+        onBtn?.isClickable = true
+        offBtn?.isClickable = false
+        rebootBtn?.isClickable = false
+    }
+
 
     private fun pingPc(): Boolean {
         return try {
             val inetStr = sharedPref.getString("edit_text_inet", "-1")
             val inet = InetAddress.getByName(inetStr)
 
-            inet.isReachable(1000)
+            val response = inet.isReachable(1000)
+
+            // creating spinner for a really short period of time
+            if (response) {
+                spinner.postDelayed({
+                    spinner.visibility = View.GONE
+                }, 100)
+            } else {
+                spinner.visibility = View.GONE
+            }
+
+            return response
         } catch (e: Exception){
             e.printStackTrace()
             false
         }
     }
-
-    private fun getPcState(view: View) {
-            when (pingPc()) {
-                true -> {
-                    view.findViewById<ToggleButton>(R.id.toggleButton).isChecked = false
-                    val stateTextView = view.findViewById<TextView>(R.id.state)
-                    stateTextView.text = getString(R.string.enabled)
-                }
-                false -> {
-                    view.findViewById<ToggleButton>(R.id.toggleButton).isChecked = true
-                    val stateTextView = view.findViewById<TextView>(R.id.state)
-                    stateTextView.text = getString(R.string.disabled)
-                }
-            }
-    }
-
-
 
     private fun bytes(mac: String): ByteArray {
         val hex: List<String> = mac.split(":", ignoreCase = true)
@@ -121,12 +162,10 @@ class FirstFragment : Fragment() {
         return macAddress
     }
 
-    private fun sshCon(pass: String) {
+    private fun sshCon(pass: String, commandToExecute: String) {
         val username = sharedPref.getString("edit_text_username", "")
         val inet = sharedPref.getString("edit_text_inet", "")
         val port = sharedPref.getString("edit_text_port", "22")?.toInt()
-
-        val command = "sudo -S -p '' shutdown now"
 
         val key = "user.home"
         val dir = context?.applicationInfo?.dataDir
@@ -143,15 +182,15 @@ class FirstFragment : Fragment() {
             val jsch = JSch()
 
             session = port?.let { jsch.getSession(username, inet, it) }
-            session?.setPassword(pass.toString())
+            session?.setPassword(pass)
             session?.setConfig(config)
-            session?.connect()
+            session?.connect(1500)
 
             Log.d("Connection", "Established")
 
             channel = session?.openChannel("exec")
             val chan = channel as ChannelExec
-            channel.setCommand(command)
+            channel.setCommand(commandToExecute)
 
             channel?.inputStream = null
             val out = channel?.outputStream
@@ -178,6 +217,7 @@ class FirstFragment : Fragment() {
                 Log.d("Exit-status:", channel.exitStatus.toString())
                 if (channel.exitStatus == 0) {
                     val handler = Handler(Looper.getMainLooper())
+                    enabled = true
                     handler.post(Runnable {
                         Toast.makeText(activity, R.string.pc_shutdown_done, Toast.LENGTH_SHORT).show()
                     })
@@ -204,17 +244,20 @@ class FirstFragment : Fragment() {
 
             }*/
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-
+        } catch (e: JSchException) {
             val handler = Handler(Looper.getMainLooper())
-            handler.post(Runnable {
-                Toast.makeText(activity, R.string.ssh_error, Toast.LENGTH_SHORT).show()
-                view?.findViewById<ToggleButton>(R.id.toggleButton)?.toggle()
-            })
+            handler.post {
+                when (e.message.toString()) {
+                    "Auth fail" -> Toast.makeText(activity, R.string.wrong_password, Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(activity, R.string.ssh_error, Toast.LENGTH_SHORT).show()
+                }
+            }
         } finally {
             channel?.disconnect()
             session?.disconnect()
+            activity?.runOnUiThread {
+                spinner.visibility = View.GONE
+            }
         }
     }
 
@@ -255,7 +298,7 @@ class FirstFragment : Fragment() {
 
             socket.send(packet)
             socket.close()
-
+            enabled = true
             Toast.makeText(activity, R.string.wake_on_lan_msg, Toast.LENGTH_SHORT).show()
 
         }
@@ -265,7 +308,7 @@ class FirstFragment : Fragment() {
         }
     }
 
-    private fun showPasswordDialog() {
+    private fun showPasswordDialog(commandToExecute: String) {
         val li = LayoutInflater.from(context)
         val promptsView = li.inflate(R.layout.password_dialog, null)
         val alertDialogBuilder = AlertDialog.Builder(context)
@@ -278,20 +321,21 @@ class FirstFragment : Fragment() {
 
         alertDialogBuilder
             .setCancelable(false)
+            .setTitle(sharedPref.getString("edit_text_username", resources.getString(R.string.default_user)) + resources.getString(R.string.alert_title))
             .setPositiveButton(
-                "OK",
-                DialogInterface.OnClickListener { dialog, which ->
-                    pass = userInput.text.toString()
+                "OK"
+            ) { _, _ ->
+                pass = userInput.text.toString()
 
-                    Thread {
-                        sshCon(pass!!)
-                    }.start()
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, which ->
+                spinner.visibility = View.VISIBLE
+                Thread {
+                    sshCon(pass!!, commandToExecute)
+                }.start()
+            }
+                .setNegativeButton("Cancel"
+                ) { dialog, _ ->
                     dialog.cancel()
-                    view?.findViewById<ToggleButton>(R.id.toggleButton)?.toggle()
-                })
+                }
 
         // Creating alert dialog
         val alertDialog = alertDialogBuilder.create()

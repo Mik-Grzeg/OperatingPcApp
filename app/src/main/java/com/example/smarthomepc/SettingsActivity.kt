@@ -48,14 +48,7 @@ class SettingsActivity : AppCompatActivity() {
 
             preferenceScreen.findPreference<EditTextPreference>("edit_text_username")?.
             setOnBindEditTextListener { it.setSingleLine() }
-
-            preferenceScreen.findPreference<EditTextPreference>("edit_password")?.
-            setOnBindEditTextListener {
-                it.setSingleLine()
-                it.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-            } }
-
-
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -45,14 +45,31 @@
     <string name="mac_alert_message">MAC address that you provided does not classify as a 48 bit mac address.</string>
     <string name="close">Close</string>
     <string name="textview">TextView</string>
+
     <string name="pc_state">State</string>
     <string name="disable">Disable</string>
     <string name="enable">Enable</string>
+    <string name="reboot">Reboot</string>
+
     <string name="state_str">State:</string>
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
     <string name="wake_on_lan_msg">Your PC should be starting now</string>
+
+    <!--  messages to toast  -->
     <string name="ssh_error">Problem with connection has occured</string>
-    <string name="pc_shutdown_done">You PC should be shutting dow now</string>
+    <string name="wrong_password">Wrong password</string>
+    <string name="pc_shutdown_done">You PC should be shutting down now</string>
+
+    <string name="ping_pc_wait">Waiting for response from target PC</string>
+
+    <!-- Terminal commands -->
+    <string name="shutdown_command">sudo -S -p \'\' shutdown now</string>
+    <string name="reboot_command">sudo -S -p \'\' reboot</string>
+
+
+    <!-- Dialog password  -->
+    <string name="alert_title">\'s password:</string>
+    <string name="default_user">User</string>
 
 </resources>

@@ -50,11 +50,5 @@
             android:singleLine="true"
             app:useSimpleSummaryProvider="true" />
 
-        <EditTextPreference
-            android:key="edit_text_password"
-            android:title="@string/password"
-            android:singleLine="true"
-            android:inputType="textPassword" />
-
     </PreferenceCategory>
 </PreferenceScreen>
