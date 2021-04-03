@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">SmartHomePc</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Network Preferences -->
+    <string name="mac_address_title">Mac Address of your PC</string>
+    <string name="inet_title">IPv4 of your PC</string>
+    <string name="broadcast_title">Broadcast address</string>
+    <string name="broadcast_description">In order to wake your PC on lan, information about broadcast is required.</string>
+    <string name="port_title">Port</string>
+
+    <!-- User preferences -->
+    <string name="username_title">Username of pc account</string>
+    <string name="password_summary">*******</string>
+    <string name="password">Password</string>
+
+    <string name="hint_password">Type your password</string>
+
+    <!-- First fragment -->
+    <string name="power_on">power on</string>
+    <string name="mac_alert_title">MAC address</string>
+    <string name="mac_alert_message">MAC address that you provided does not classify as a 48 bit mac address.</string>
+    <string name="close">Close</string>
+    <string name="textview">TextView</string>
+    <string name="pc_state">State</string>
+    <string name="disable">Disable</string>
+    <string name="enable">Enable</string>
+    <string name="state_str">State:</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="wake_on_lan_msg">Your PC should be starting now</string>
+    <string name="ssh_error">Problem with connection has occured</string>
+    <string name="pc_shutdown_done">You PC should be shutting dow now</string>
+
+</resources>

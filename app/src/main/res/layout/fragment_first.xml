@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FirstFragment"
+    tools:ignore="ExtraText">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alwaysDrawnWithCache="false"
+        android:fadingEdge="horizontal|vertical"
+        android:orientation="horizontal"
+        style="@android:style/Widget.DeviceDefault.EditText"
+        app:layout_constraintTop_toBottomOf="@+id/MacAddress">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/state_str"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/state"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:singleLine="true"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/MacAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="180"
+        android:autofillHints=""
+        android:ems="10"
+        android:fontFamily="@font/ntr"
+        android:gravity="center"
+        android:selectAllOnFocus="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="18sp"
+        android:typeface="normal"
+        app:drawableLeftCompat="@drawable/pc_foreground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.048" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/ntr"
+        android:text="@string/mac_address_title"
+        app:layout_constraintBottom_toBottomOf="@+id/MacAddress"
+        app:layout_constraintEnd_toEndOf="@+id/MacAddress"
+        app:layout_constraintHorizontal_bias="0.748"
+        app:layout_constraintStart_toStartOf="@+id/MacAddress"
+        app:layout_constraintTop_toTopOf="@+id/MacAddress"
+        app:layout_constraintVertical_bias="0.141" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="382dp"
+        android:layout_height="84dp"
+        android:background="@color/purple_500"
+        android:checked="false"
+        android:drawableStart="@drawable/power_icons"
+        android:drawableLeft="@drawable/power_icons"
+        android:drawableTint="@color/toggle_btn_colors"
+        android:fontFamily="@font/ntr"
+        android:text="@string/pc_state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/white"
+        android:textOff="@string/disable"
+        android:textOn="@string/enable"
+        android:textSize="18sp"
+        android:typeface="sans"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MacAddress"
+        app:layout_constraintVertical_bias="0.178" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/refreshButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_refresh_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true"
+        android:contentDescription="TODO" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

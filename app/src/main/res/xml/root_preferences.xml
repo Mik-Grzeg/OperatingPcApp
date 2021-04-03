@@ -1,0 +1,60 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="networking_category"
+        android:title="Network">
+
+        <EditTextPreference
+            android:key="edit_text_mac_address"
+            android:selectAllOnFocus="true"
+            android:maxLines="1"
+            android:inputType="text"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/mac_address_title" />
+
+        <EditTextPreference
+            android:key="edit_text_inet"
+            android:selectAllOnFocus="true"
+            android:maxLines="1"
+            android:inputType="text"
+            android:singleLineTitle="true"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/inet_title" />
+
+        <EditTextPreference
+            android:key="edit_text_broadcast"
+            android:dialogMessage="@string/broadcast_description"
+            android:maxLines="1"
+            android:inputType="text"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/broadcast_title" />
+
+        <EditTextPreference
+            android:key="edit_text_port"
+            android:title="@string/port_title"
+            android:maxLines="1"
+            android:inputType="text"
+            android:singleLine="true"
+            android:defaultValue="22"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="credentials"
+        android:title="Credentials">
+
+        <EditTextPreference
+            android:key="edit_text_username"
+            android:title="@string/username_title"
+            android:singleLine="true"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:key="edit_text_password"
+            android:title="@string/password"
+            android:singleLine="true"
+            android:inputType="textPassword" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
