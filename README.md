@@ -1,9 +1,10 @@
 # OperatingPcApp
 I created the app for my personal use only.
 Its functionalities are simple, though quite useful in my opinion.  
-##### Functionalities: 
+#### Functionalities: 
 * Power on pc
 * Power off pc
+* Reboot
 
 Personally I do not opt for the eye pleasing UI, especially with this project I only needed its simple features.
 It was my first experience with developing an application.
@@ -18,7 +19,7 @@ Its logic is rather simple, it sends a frame that is sent as a broadcast, which 
 When it comes to  wireless interfaces, most of them do not maintain a link in lower power states and cannot receive a magic packet.
 Wake-on-lan packet is sent at layer 2 of OSI model, so it does not require ip of destination pc.qq!
 
-#### Power off
+#### Power off and Reboot
 ##### Requirements:
 * Ssh server on target pc
 * Port that openssh daemon listens for connections from clients
@@ -26,9 +27,9 @@ Wake-on-lan packet is sent at layer 2 of OSI model, so it does not require ip of
 * Username of pc account
 * Password to the account
 * Sudo
-That feature works on linux, using sudo to shutdown the pc. User has to have privileged access to perform such an action.
+These features work on linux, using sudo to shutdown / reboot the pc. User has to have privileged access to perform such an action.
 
 Main UI                    |             Settings
 :-------------------------:|:-------------------------:
-![](https://user-images.githubusercontent.com/58633804/113486288-3e956600-94b2-11eb-89bf-b29a6a1cbc57.png?raw=true)  |  ![SmartHomePC_Settings](https://user-images.githubusercontent.com/58633804/113486419-e448d500-94b2-11eb-824f-3d03a0f44fea.png)
+![MainMenu](https://user-images.githubusercontent.com/58633804/113493276-3b17d400-94de-11eb-878a-baace6403b09.png)  |  ![Settings](https://user-images.githubusercontent.com/58633804/113493316-816d3300-94de-11eb-9e84-d3520810af37.png)
 
